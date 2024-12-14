@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us with AI Chatbot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+      padding: 0 20px;
+    }
+
+    header {
+      background-color: #0073e6;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    main {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .contact-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
+      width: 60%;
+    }
+
+    .contact-container h2 {
+      color: #0073e6;
+      margin-bottom: 20px;
+    }
+
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .contact-form button {
+      background-color: #0073e6;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .contact-form button:hover {
+      background-color: #005bb5;
+    }
+
+    .chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .chatbot-header {
+      font-weight: bold;
+      color: #0073e6;
+      margin-bottom: 10px;
+    }
+
+    .chatbot-body {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #333;
+      height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .chatbot-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .chatbot-btn {
+      background-color: #0073e6;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .chatbot-btn:hover {
+      background-color: #005bb5;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: #0073e6;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Contact Us</h1>
+  </header>
+
+  <main>
+    <div class="contact-container">
+      <h2>Get in Touch</h2>
+      <form class="contact-form" id="contactForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </main>
+
+  <div class="chatbot-container" id="chatbot">
+    <div class="chatbot-header">AI Chatbot</div>
+    <div class="chatbot-body" id="chatbot-body">
+      <p><strong>Chatbot:</strong> Hello! How can I assist you today?</p>
+    </div>
+    <input type="text" id="chat-input" class="chatbot-input" placeholder="Ask something...">
+    <button class="chatbot-btn" onclick="chatbotReply()">Send</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Contact Us Page. All Rights Reserved.</p>
+    <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+  </footer>
+
+  <script>
+    async function chatbotReply() {
+      const userMessage = document.getElementById('chat-input').value;
+      const chatbotBody = document.getElementById('chatbot-body');
+
+      if (userMessage.trim() !== '') {
+        chatbotBody.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+        document.getElementById('chat-input').value = '';
+        
+        // Call AI API for response
+        try {
+          const response = await fetch('https://api.openai.com/v1/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer YOUR_API_KEY'
+            },
+            body: JSON.stringify({
+              model: 'text-davinci-003',
+              prompt: userMessage,
+              max_tokens: 150
+            })
+          });
+
+          const data = await response.json();
+          const botReply = data.choices[0].text.trim();
+
+          chatbotBody.innerHTML += `<p><strong>Chatbot:</strong> ${botReply}</p>`;
+        } catch (error) {
+          chatbotBody.innerHTML += `<p><strong>Chatbot:</strong> Sorry, I couldn't process your request.</p>`;
+        }
+
+        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+      }
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+
+      // Use Email API to send form data
+      fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          service_id: 'service_xxx',
+          template_id: 'template_xxx',
+          user_id: 'user_xxx',
+          template_params: {
+            name: name,
+            email: email,
+            message: message
+          }
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Your message has been sent successfully!');
+        } else {
+          alert('Failed to send message. Please try again.');
+        }
+      })
+      .catch(error => {
+        alert('An error occurred while sending the message.');
+      });
+    });
+  </script>
+</body>
+</html>
